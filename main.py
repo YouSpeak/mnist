@@ -96,10 +96,14 @@ if not os.path.exists(checkpoint_pre_path):
 
 # 判断命令是否执行继续训练
 if args.load_checkpoint:
-    checkpoint_path_tmp = find_last_checkpoint(checkpoint_pre_path)
+    checkpoint_path_tmp = ""
+    if args.checkpoint_path == None:  
+        checkpoint_path_tmp = find_last_checkpoint(checkpoint_pre_path)
+        if checkpoint_path_tmp == "":
+            raise Exception("search checkpoint path is not exist, please check")
+    else:
+        checkpoint_path_tmp = args.checkpoint_path
     logging.info("checkpoint_path is %s", checkpoint_path_tmp)
-    if checkpoint_path_tmp == "":
-        raise Exception("search checkpoint path is not exist, please check")
     checkpoint = torch.load(checkpoint_path_tmp)
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
